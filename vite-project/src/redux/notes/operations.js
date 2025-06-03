@@ -1,25 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { fetchNotes, addNote, editNote, deleteNote } from "../../services/api";
 
-axios.defaults.baseURL = "https://66cdad9a8ca9aa6c8ccb3c7d.mockapi.io";
-
-export const fetchNotes = createAsyncThunk(
-  "notes/fetchAll",
+export const fetchNotesThunk = createAsyncThunk(
+  "notes/fetchNotes",
   async (_, thunkAPI) => {
     try {
-      const response = await axios.get("/notes");
-      return response.data;
-    } catch (e) {
-      return thunkAPI.rejectWithValue(e.message);
-    }
-  }
-);
-export const addNote = createAsyncThunk(
-  "Notes/addNote",
-  async (newNote, thunkAPI) => {
-    try {
-      const response = await axios.post("/notes", newNote);
-      console.log(response.data);
+      const response = await fetchNotes();
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
@@ -27,13 +13,36 @@ export const addNote = createAsyncThunk(
   }
 );
 
-export const deleteNote = createAsyncThunk(
-  "notes/deleteNote",
-  async (noteId, thunkAPI) => {
+export const addNoteThunk = createAsyncThunk(
+  "notes/addNote",
+  async (note, thunkAPI) => {
     try {
-      const response = await axios.delete(`/notes/${noteId}`);
-      console.log(response.data);
+      const response = await addNote(note);
       return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+export const editNoteThunk = createAsyncThunk(
+  "notes/editNote",
+  async ({ id, note }, thunkAPI) => {
+    try {
+      const response = await editNote(id, note);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+export const deleteNoteThunk = createAsyncThunk(
+  "notes/deleteNote",
+  async (id, thunkAPI) => {
+    try {
+      await deleteNote(id);
+      return id;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }

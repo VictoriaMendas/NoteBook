@@ -51,6 +51,7 @@ router.post("/", async (req, res) => {
   res.status(201).json(newNote);
 });
 
+// PUT /notes/:id — редагує нотатку
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
   const { title, content } = req.body;
@@ -74,6 +75,7 @@ router.put("/:id", async (req, res) => {
   res.status(200).json(notes[noteIndex]);
 });
 
+// DELETE /notes/:id — видаляє нотатку
 router.delete("/:id", async (req, res) => {
   const { id } = req.params;
   const notes = await readNotes();

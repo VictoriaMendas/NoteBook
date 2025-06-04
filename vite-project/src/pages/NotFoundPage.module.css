@@ -2,11 +2,12 @@
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
+  text-align: center;
 }
 
-.createLink {
+.link {
   display: inline-block;
-  margin-bottom: 20px;
+  margin-top: 20px;
   padding: 10px 15px;
   background-color: #007bff;
   color: white;
@@ -14,6 +15,6 @@
   border-radius: 5px;
 }
 
-.createLink:hover {
+.link:hover {
   background-color: #0056b3;
 }

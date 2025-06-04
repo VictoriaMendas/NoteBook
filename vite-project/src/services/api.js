@@ -1,24 +1,49 @@
-import axios from "axios";
-
-const api = axios.create({
-  baseURL: "http://localhost:5000",
-});
+const mockNotes = [
+  {
+    id: "1",
+    title: "Test Note 1",
+    content: "This is a test note 1.",
+    createdAt: "2025-06-04T14:00:00Z",
+    updatedAt: "2025-06-04T14:00:00Z",
+  },
+  {
+    id: "2",
+    title: "Test Note 2",
+    content: "This is a test note 2.",
+    createdAt: "2025-06-04T15:00:00Z",
+    updatedAt: "2025-06-04T15:00:00Z",
+  },
+];
 
 export const fetchNotes = async () => {
-  const response = await api.get("/notes");
-  return response.data;
+  return mockNotes;
 };
 
 export const addNote = async (note) => {
-  const response = await api.post("/notes", note);
-  return response.data;
+  const newNote = {
+    ...note,
+    id: String(Math.random()),
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+  mockNotes.push(newNote);
+  return newNote;
 };
 
 export const editNote = async (id, note) => {
-  const response = await api.put(`/notes/${id}`, note);
-  return response.data;
+  const index = mockNotes.findIndex((n) => n.id === id);
+  if (index === -1) throw new Error("Note not found");
+  const updatedNote = {
+    ...mockNotes[index],
+    ...note,
+    updatedAt: new Date().toISOString(),
+  };
+  mockNotes[index] = updatedNote;
+  return updatedNote;
 };
 
 export const deleteNote = async (id) => {
-  await api.delete(`/notes/${id}`);
+  const index = mockNotes.findIndex((n) => n.id === id);
+  if (index === -1) throw new Error("Note not found");
+  mockNotes.splice(index, 1);
 };

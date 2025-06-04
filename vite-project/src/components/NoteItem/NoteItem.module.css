@@ -1,0 +1,36 @@
+.item {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.actions {
+  margin-top: 10px;
+}
+
+.editBtn {
+  padding: 5px 10px;
+  background-color: #28a745;
+  color: white;
+  text-decoration: none;
+  border-radius: 3px;
+  margin-right: 10px;
+}
+
+.editBtn:hover {
+  background-color: #218838;
+}
+
+.deleteBtn {
+  padding: 5px 10px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.deleteBtn:hover {
+  background-color: #c82333;
+}

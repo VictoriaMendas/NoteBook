@@ -6,7 +6,7 @@ export const fetchNotesThunk = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const response = await fetchNotes();
-      return response.data;
+      return response;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -18,7 +18,7 @@ export const addNoteThunk = createAsyncThunk(
   async (note, thunkAPI) => {
     try {
       const response = await addNote(note);
-      return response.data;
+      return response;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -30,7 +30,7 @@ export const editNoteThunk = createAsyncThunk(
   async ({ id, note }, thunkAPI) => {
     try {
       const response = await editNote(id, note);
-      return response.data;
+      return response;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }

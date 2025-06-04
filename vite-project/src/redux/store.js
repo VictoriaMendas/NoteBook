@@ -1,5 +1,5 @@
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import { persistReducer, persistStore } from "redux-persist";
+import { configureStore } from "@reduxjs/toolkit";
+import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import notesReducer from "./notes/slice";
 
@@ -8,15 +8,12 @@ const persistConfig = {
   storage,
 };
 
-// Комбінуємо редюсери
-const rootReducer = combineReducers({
-  notes: notesReducer,
-});
-
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const persistedReducer = persistReducer(persistConfig, notesReducer);
 
 export const store = configureStore({
-  reducer: persistedReducer,
+  reducer: {
+    notes: persistedReducer,
+  },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {

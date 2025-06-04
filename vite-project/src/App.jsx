@@ -1,7 +1,12 @@
-import "./App.css";
+import { Outlet } from "react-router-dom";
 
 function App() {
-  return <div>NoteBook</div>;
+  console.log("App component rendered"); // Дебаг
+  return (
+    <div>
+      <Outlet />
+    </div>
+  );
 }
 
 export default App;

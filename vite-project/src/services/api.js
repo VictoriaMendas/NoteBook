@@ -1,4 +1,4 @@
-const mockNotes = [
+let mockNotes = [
   {
     id: "1",
     title: "Test Note 1",
@@ -16,7 +16,7 @@ const mockNotes = [
 ];
 
 export const fetchNotes = async () => {
-  return mockNotes;
+  return [...mockNotes];
 };
 
 export const addNote = async (note) => {
@@ -26,7 +26,7 @@ export const addNote = async (note) => {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
-  mockNotes.push(newNote);
+  mockNotes = [...mockNotes, newNote];
   return newNote;
 };
 
@@ -38,12 +38,16 @@ export const editNote = async (id, note) => {
     ...note,
     updatedAt: new Date().toISOString(),
   };
-  mockNotes[index] = updatedNote;
+  mockNotes = [
+    ...mockNotes.slice(0, index),
+    updatedNote,
+    ...mockNotes.slice(index + 1),
+  ];
   return updatedNote;
 };
 
 export const deleteNote = async (id) => {
   const index = mockNotes.findIndex((n) => n.id === id);
   if (index === -1) throw new Error("Note not found");
-  mockNotes.splice(index, 1);
+  mockNotes = mockNotes.filter((n) => n.id !== id); // Оновлюємо mockNotes через фільтрацію
 };

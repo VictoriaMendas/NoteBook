@@ -7,4 +7,10 @@ export default defineConfig({
   build: {
     sourcemap: true,
   },
+  server: {
+    hmr: {
+      clientPort: 5173,
+      port: 5173,
+    },
+  },
 });

@@ -15,7 +15,6 @@ const notesSlice = createSlice({
   },
   reducers: {},
   extraReducers: (builder) => {
-    // fetchNotesThunk
     builder
       .addCase(fetchNotesThunk.pending, (state) => {
         state.isLoading = true;
@@ -23,13 +22,13 @@ const notesSlice = createSlice({
       })
       .addCase(fetchNotesThunk.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.notes = action.payload;
-        console.log("fetchNotesThunk fulfilled, new notes:", state.notes); // Дебаг
+        state.notes = action.payload; // Змінюємо з "items" на "notes"
+        console.log("fetchNotesThunk fulfilled, new notes:", state.notes);
       })
       .addCase(fetchNotesThunk.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
-        console.log("fetchNotesThunk rejected, error:", action.payload); // Дебаг
+        console.log("fetchNotesThunk rejected, error:", action.payload);
       })
       // addNoteThunk
       .addCase(addNoteThunk.pending, (state) => {
@@ -38,7 +37,7 @@ const notesSlice = createSlice({
       })
       .addCase(addNoteThunk.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.notes.push(action.payload);
+        state.notes.push(action.payload); // Змінюємо з "items" на "notes"
       })
       .addCase(addNoteThunk.rejected, (state, action) => {
         state.isLoading = false;

@@ -1,28 +1,25 @@
-const styles = {
-  container: {
-    minHeight: "calc(100vh - 50px)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  title: {
-    fontWeight: 500,
-    fontSize: 48,
-    textAlign: "center",
-  },
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { addNoteThunk } from "../../redux/notes/operations";
+import NoteForm from "../../components/NoteForm/NoteForm";
+import styles from "./CreateNotePage.module.css";
+
+const CreateNotePage = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleSubmit = (note) => {
+    dispatch(addNoteThunk(note)).then(() => {
+      navigate("/");
+    });
+  };
+
+  return (
+    <div className={styles.container}>
+      <h1>Create Note</h1>
+      <NoteForm onSubmit={handleSubmit} />
+    </div>
+  );
 };
 
-export default function HomePage() {
-  return (
-    <>
-      <div style={styles.container}>
-        <h1 style={styles.title}>
-          Welcome to NoteeBook
-          <span role="img" aria-label="Greeting icon">
-            💁‍♀️
-          </span>
-        </h1>
-      </div>
-    </>
-  );
-}
+export default CreateNotePage;

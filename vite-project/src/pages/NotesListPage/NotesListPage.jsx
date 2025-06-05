@@ -12,19 +12,27 @@ import styles from "./NotesListPage.module.css";
 
 const NotesListPage = () => {
   const dispatch = useDispatch();
-  const notes = useSelector(selectNotes) || []; // Додаємо || [] для захисту від undefined
+  const notes = useSelector(selectNotes) || [];
   const isLoading = useSelector(selectIsLoading);
   const error = useSelector(selectError);
 
   useEffect(() => {
-    dispatch(fetchNotesThunk());
-  }, [dispatch]);
+    if (notes.length === 0) {
+      dispatch(fetchNotesThunk());
+    }
+  }, [dispatch, notes.length]);
 
   const handleDelete = (id) => {
-    dispatch(deleteNoteThunk(id));
+    dispatch(deleteNoteThunk(id))
+      .unwrap()
+      .then(() => {
+        dispatch(fetchNotesThunk());
+      })
+      .catch((error) => {
+        console.error("Error deleting note:", error);
+      });
   };
 
-  // Дебаг: виводимо нотатки в консоль
   console.log("Notes in NotesListPage:", notes);
 
   return (
@@ -35,12 +43,9 @@ const NotesListPage = () => {
       </Link>
       {isLoading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
-      {/* Дебаг: виводимо нотатки прямо в JSX */}
-      <div>
-        <h2>Debug: Notes from Redux</h2>
-        <pre>{JSON.stringify(notes, null, 2)}</pre>
-      </div>
-      {!isLoading && !error && (
+
+      {notes.length === 0 && !isLoading && !error && <p>No notes available.</p>}
+      {!isLoading && !error && notes.length > 0 && (
         <NoteList notes={notes} onDelete={handleDelete} />
       )}
     </div>

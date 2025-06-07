@@ -6,14 +6,15 @@ import {
   deleteNoteThunk,
 } from "./operations";
 
+const initialState = {
+  notes: [],
+  isLoading: false,
+  error: null,
+};
+
 const notesSlice = createSlice({
   name: "notes",
-  initialState: {
-    notes: [],
-    isLoading: false,
-    error: null,
-  },
-  reducers: {},
+  initialState,
   extraReducers: (builder) => {
     builder
       .addCase(fetchNotesThunk.pending, (state) => {
@@ -22,28 +23,24 @@ const notesSlice = createSlice({
       })
       .addCase(fetchNotesThunk.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.notes = action.payload; // Змінюємо з "items" на "notes"
-        console.log("fetchNotesThunk fulfilled, new notes:", state.notes);
+        state.notes = action.payload;
       })
       .addCase(fetchNotesThunk.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
-        console.log("fetchNotesThunk rejected, error:", action.payload);
       })
-      // addNoteThunk
       .addCase(addNoteThunk.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
       .addCase(addNoteThunk.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.notes.push(action.payload); // Змінюємо з "items" на "notes"
+        state.notes.push(action.payload);
       })
       .addCase(addNoteThunk.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
       })
-      // editNoteThunk
       .addCase(editNoteThunk.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -61,7 +58,6 @@ const notesSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
       })
-      // deleteNoteThunk
       .addCase(deleteNoteThunk.pending, (state) => {
         state.isLoading = true;
         state.error = null;

@@ -1,92 +1,60 @@
-import { Router } from "express";
-import { v4 as uuidv4 } from "uuid";
-import fs from "fs/promises";
-import path from "path";
-import { fileURLToPath } from "url";
+import express from "express";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const notesFilePath = path.join(__dirname, "../../data/notes.json");
+import { validateBody } from "../middlewares/validateBody.js";
+import { createNoteSchema, NotesModel } from "../models/notes.js";
 
-const router = Router();
+const router = express.Router();
 
-// Допоміжна функція для читання нотаток із файлу
-const readNotes = async () => {
-  try {
-    const data = await fs.readFile(notesFilePath, "utf-8");
-    return JSON.parse(data);
-  } catch (error) {
-    return [];
-  }
-};
-
-// Допоміжна функція для запису нотаток у файл
-const writeNotes = async (notes) => {
-  await fs.writeFile(notesFilePath, JSON.stringify(notes, null, 2));
-};
-
-// GET /notes — повертає список нотаток
+// Отримати всі нотатки
 router.get("/", async (req, res) => {
-  const notes = await readNotes();
-  res.status(200).json(notes);
+  try {
+    console.log("GET /notes received");
+    const notes = await NotesModel.find({});
+    res.status(200).json(notes);
+  } catch (error) {
+    console.error("Error in GET /notes:", error);
+    res.status(500).json({ message: "Error reading notes" });
+  }
 });
 
-// POST /notes — створює нову нотатку
-router.post("/", async (req, res) => {
-  const { title, content } = req.body;
-  if (!title || !content) {
-    return res.status(400).json({ message: "Title and content are required" });
-  }
+// Створити нову нотатку
+router.post("/", validateBody(createNoteSchema), async (req, res) => {
+  try {
+    console.log("POST /notes received:", req.body);
 
-  const notes = await readNotes();
-  const newNote = {
-    id: uuidv4(),
-    title,
-    content,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
-  notes.push(newNote);
-  await writeNotes(notes);
-  res.status(201).json(newNote);
+    const newNote = await NotesModel.create(req.body);
+
+    res.status(201).json(newNote);
+  } catch (error) {
+    console.error("Error in POST /notes:", error);
+    res.status(500).json({ message: "Error creating note" });
+  }
 });
 
-// PUT /notes/:id — редагує нотатку
-router.put("/:id", async (req, res) => {
-  const { id } = req.params;
-  const { title, content } = req.body;
-  if (!title || !content) {
-    return res.status(400).json({ message: "Title and content are required" });
+// Оновити нотатку
+router.put("/:id", validateBody(createNoteSchema), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedNote = await NotesModel.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+    res.status(200).json(updatedNote);
+  } catch (error) {
+    console.error("Error in PUT /notes:", error);
+    res.status(500).json({ message: "Error updating note" });
   }
-
-  const notes = await readNotes();
-  const noteIndex = notes.findIndex((note) => note.id === id);
-  if (noteIndex === -1) {
-    return res.status(404).json({ message: "Note not found" });
-  }
-
-  notes[noteIndex] = {
-    ...notes[noteIndex],
-    title,
-    content,
-    updatedAt: new Date().toISOString(),
-  };
-  await writeNotes(notes);
-  res.status(200).json(notes[noteIndex]);
 });
 
-// DELETE /notes/:id — видаляє нотатку
+// Видалити нотатку
 router.delete("/:id", async (req, res) => {
-  const { id } = req.params;
-  const notes = await readNotes();
-  const noteIndex = notes.findIndex((note) => note.id === id);
-  if (noteIndex === -1) {
-    return res.status(404).json({ message: "Note not found" });
+  try {
+    const { id } = req.params;
+    const deletedNote = await NotesModel.findByIdAndDelete(id);
+    res.status(204).json(deletedNote);
+  } catch (error) {
+    console.error("Error in DELETE /notes:", error);
+    res.status(500).json({ message: "Error deleting note" });
   }
-
-  notes.splice(noteIndex, 1);
-  await writeNotes(notes);
-  res.status(204).send();
 });
 
 export default router;
